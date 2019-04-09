@@ -1,0 +1,26 @@
+{
+  "name": "@gazetteer/react",
+  "version": "0.1.0",
+  "description": "Declarative index for React apps",
+  "main": "index.js",
+  "dependencies": {
+    "hapi": "^18.1.0",
+    "htmlescape": "^1.1.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@types/hapi": "^18.0.1",
+    "@types/htmlescape": "^1.1.1",
+    "@types/react": "^16.8.13",
+    "@types/react-dom": "^16.8.3",
+    "ts-node-dev": "^1.0.0-pre.32",
+    "typescript": "^3.4.2"
+  },
+  "scripts": {
+    "dev": "PORT=9911 ts-node-dev server.ts",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "MIT"
+}
