@@ -1,7 +1,7 @@
 import { Server } from "hapi";
 import jsonStringifyForHTML from "htmlescape";
 
-import { GazetteerRoute, DataSourceResult } from "./types";
+import { GazetteerRoute, DataSourceResult, dataSourceIdentifierToString, DataSourceIdentifier } from "./types";
 import { routes } from "./main";
 import { loadDataSource } from "./dataSources/server";
 import { htmlPage, renderTemplateHTML } from "./templates/server";
@@ -28,23 +28,23 @@ async function start(routes: Array<GazetteerRoute>) {
         path,
         async handler(request, h) {
           const results = (await Promise.all(
-            route.dataSources.map(id =>
-              loadDataSource(id)
-                .then(data => ({ id: id.toString(), data, loaded: true }))
+            route.dataSources.map(identifier =>
+              loadDataSource(identifier, { params: request.params })
+                .then(data => ({ identifier, data, loaded: true }))
                 .catch(error => ({
-                  id: id.toString(),
+                  identifier,
                   error: error as Error,
                   loaded: true
                 }))
             )
-          )) as Array<DataSourceResult & { id: string }>;
+          )) as Array<DataSourceResult & { identifier: DataSourceIdentifier }>;
 
           const contentHTML =
             renderTemplateHTML({
               id: route.template,
               type: route.templateType,
-              resultForDataSource<Data>(id: symbol) {
-                return (results.find(result => result.id === id.toString()) || {
+              resultForDataSource<Data>(identifier: DataSourceIdentifier) {
+                return (results.find(result => result.identifier === identifier) || {
                   loaded: false
                 }) as DataSourceResult<Data>;
               }

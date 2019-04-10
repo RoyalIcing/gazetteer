@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
 
-import { DataSourceResult } from "../types";
+import { DataSourceResult, DataSourceIdentifier } from "../types";
 import { Templates } from "../main";
 import { Feed } from "./Feed/Feed";
 import { EditAccount } from "./EditAccount/EditAccount";
 import { DataSourceContext } from "../root/DataSourceContext";
+import { UserProfile } from "./UserProfile/UserProfile";
 
 export function renderTemplateHTML({
   id,
@@ -15,7 +16,7 @@ export function renderTemplateHTML({
   id: symbol;
   type: "react";
   resultForDataSource<Data>(
-    id: symbol
+    identifier: DataSourceIdentifier
   ): DataSourceResult<Data>;
 }): string | undefined {
   if (type === "react") {
@@ -24,6 +25,8 @@ export function renderTemplateHTML({
       el = <Feed />;
     } else if (id.toString() === Templates.EditAccount.toString()) {
       el = <EditAccount />;
+    } else if (id.toString() === Templates.UserProfile.toString()) {
+      el = <UserProfile />;
     }
 
     return ReactDOM.renderToString(

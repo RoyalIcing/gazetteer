@@ -1,17 +1,21 @@
-import { GazetteerRoute } from "./types";
+import { GazetteerRoute, DataSourceIdentifier, uniqueDataSource } from "./types";
 
 export const DataSources = {
   Feed: {
-    list: Symbol("Data.Feed.list")
+    list: uniqueDataSource("Data.Feed.list")
   },
   Viewer: {
-    profile: Symbol("Data.Viewer.profile")
+    profile: uniqueDataSource("Data.Viewer.profile")
+  },
+  URLParams: {
+    username: { type: "urlParam", param: "username" } as DataSourceIdentifier
   }
 };
 
 export const Templates = {
-  Feed: Symbol("Templates.Feed"),
-  EditAccount: Symbol("Templates.EditAccount")
+  Feed: Symbol.for("Templates.Feed"),
+  EditAccount: Symbol.for("Templates.EditAccount"),
+  UserProfile: Symbol.for("Templates.UserProfile")
 };
 
 export const routes: Array<GazetteerRoute> = [
@@ -27,4 +31,11 @@ export const routes: Array<GazetteerRoute> = [
     templateType: "react",
     template: Templates.EditAccount
   },
+  {
+    paths: ["/user/{username}"],
+    // paths: [["/user/", String]],
+    dataSources: [DataSources.URLParams.username],
+    templateType: "react",
+    template: Templates.UserProfile
+  }
 ];
