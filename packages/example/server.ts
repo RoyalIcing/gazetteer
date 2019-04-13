@@ -42,7 +42,6 @@ async function start(routes: Array<GazetteerRoute>) {
           const contentHTML =
             renderTemplateHTML({
               id: route.template,
-              type: route.templateType,
               resultForDataSource<Data>(identifier: DataSourceIdentifier) {
                 return (results.find(result => result.identifier === identifier) || {
                   loaded: false

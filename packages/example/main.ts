@@ -1,41 +1,43 @@
-import { GazetteerRoute, DataSourceIdentifier, uniqueDataSource } from "./types";
+import {
+  GazetteerRoute,
+  uniqueDataSource,
+  urlParam,
+  reactTemplate
+} from "./types";
 
 export const DataSources = {
   Feed: {
-    list: uniqueDataSource("Data.Feed.list")
+    list: uniqueDataSource("Feed.list")
   },
   Viewer: {
-    profile: uniqueDataSource("Data.Viewer.profile")
+    profile: uniqueDataSource("Viewer.profile")
   },
   URLParams: {
-    username: { type: "urlParam", param: "username" } as DataSourceIdentifier
+    username: urlParam("username")
   }
 };
 
 export const Templates = {
-  Feed: Symbol.for("Templates.Feed"),
-  EditAccount: Symbol.for("Templates.EditAccount"),
-  UserProfile: Symbol.for("Templates.UserProfile")
+  Feed: reactTemplate("Templates.Feed"),
+  EditAccount: reactTemplate("Templates.EditAccount"),
+  UserProfile: reactTemplate("Templates.UserProfile")
 };
 
 export const routes: Array<GazetteerRoute> = [
   {
     paths: ["/feed"],
     dataSources: [DataSources.Feed.list, DataSources.Viewer.profile],
-    templateType: "react",
     template: Templates.Feed
   },
   {
     paths: ["/account"],
     dataSources: [DataSources.Viewer.profile],
-    templateType: "react",
     template: Templates.EditAccount
   },
   {
     paths: ["/user/{username}"],
     // paths: [["/user/", String]],
     dataSources: [DataSources.URLParams.username],
-    templateType: "react",
     template: Templates.UserProfile
   }
 ];

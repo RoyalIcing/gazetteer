@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
 
-import { DataSourceResult, DataSourceIdentifier } from "../types";
+import { DataSourceResult, DataSourceIdentifier, TemplateIdentifier } from "../types";
 import { Templates } from "../main";
 import { Feed } from "./Feed/Feed";
 import { EditAccount } from "./EditAccount/EditAccount";
@@ -10,22 +10,20 @@ import { UserProfile } from "./UserProfile/UserProfile";
 
 export function renderTemplateHTML({
   id,
-  type,
   resultForDataSource
 }: {
-  id: symbol;
-  type: "react";
+  id: TemplateIdentifier;
   resultForDataSource<Data>(
     identifier: DataSourceIdentifier
   ): DataSourceResult<Data>;
 }): string | undefined {
-  if (type === "react") {
+  if (id.framework === "react") {
     let el: React.ReactElement | undefined;
-    if (id.toString() === Templates.Feed.toString()) {
+    if (id === Templates.Feed) {
       el = <Feed />;
-    } else if (id.toString() === Templates.EditAccount.toString()) {
+    } else if (id === Templates.EditAccount) {
       el = <EditAccount />;
-    } else if (id.toString() === Templates.UserProfile.toString()) {
+    } else if (id === Templates.UserProfile) {
       el = <UserProfile />;
     }
 
