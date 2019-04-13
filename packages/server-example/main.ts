@@ -36,9 +36,9 @@ export const routes: Array<GazetteerRoute> = [
   },
   {
     paths: ["/user/{username}"],
-    // paths: [["/user/", String]],
-    // paths: [["/user/", p.string]],
     // paths: [["/user/", /[^\W0-9]\w+/]],
+    // paths: [["/user/", p.string]],
+    // paths: [["/user/", String]],
     dataSources: [DataSources.URLParams.username],
     template: Templates.UserProfile
   }
