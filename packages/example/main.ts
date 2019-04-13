@@ -18,9 +18,9 @@ export const DataSources = {
 };
 
 export const Templates = {
-  Feed: reactTemplate("Templates.Feed"),
-  EditAccount: reactTemplate("Templates.EditAccount"),
-  UserProfile: reactTemplate("Templates.UserProfile")
+  Feed: reactTemplate("Feed"),
+  EditAccount: reactTemplate("EditAccount"),
+  UserProfile: reactTemplate("UserProfile")
 };
 
 export const routes: Array<GazetteerRoute> = [
@@ -37,6 +37,8 @@ export const routes: Array<GazetteerRoute> = [
   {
     paths: ["/user/{username}"],
     // paths: [["/user/", String]],
+    // paths: [["/user/", p.string]],
+    // paths: [["/user/", /[^\W0-9]\w+/]],
     dataSources: [DataSources.URLParams.username],
     template: Templates.UserProfile
   }
