@@ -1,8 +1,9 @@
 import React from "react";
 
 import { DataSourceResult } from "../../types";
-import { DataSources } from "../../main";
+import { Templates, DataSources } from "../../main";
 import { useDataSource } from "../../root/DataSourceContext";
+import { registerTemplate } from "../registry";
 
 type FeedListData = Array<{
   type: "video" | "article";
@@ -29,3 +30,8 @@ export function Feed({}) {
     </div>
   );
 }
+
+registerTemplate({
+  ...Templates.Feed,
+  component: Feed
+});

@@ -5,6 +5,9 @@ import { GazetteerRoute, DataSourceResult, DataSourceIdentifier } from "./types"
 import { loadDataSource } from "./dataSources/server";
 import { htmlPage, renderTemplateHTML } from "./templates/server";
 import { loadAssetForPublicPath } from "./assets/server";
+import "./templates/Feed/Feed";
+import "./templates/EditAccount/EditAccount";
+import "./templates/UserProfile/UserProfile";
 
 export async function startServer(routes: Array<GazetteerRoute>) {
   const server = new Server({
@@ -59,6 +62,13 @@ export async function startServer(routes: Array<GazetteerRoute>) {
                 }) as DataSourceResult<Data>;
               }
             }) || "";
+          
+          const templateName = route.template.name;
+          const bodyHTML = `
+            ${contentHTML}
+
+            <script src="/public/templates/${templateName}/${templateName}.js">
+          `;
 
           return h
             .response(
@@ -66,16 +76,10 @@ export async function startServer(routes: Array<GazetteerRoute>) {
                 `<script id="dataSourcesInitialResults" type="json">${jsonStringifyForHTML(
                   results
                 )}</script>`,
-                contentHTML
+                bodyHTML
               )
             )
             .type("text/html");
-
-          // return {
-          //   templateType: route.templateType,
-          //   dataSources: route.dataSources.map(symbol => symbol.toString()),
-          //   results
-          // };
         }
       });
     });

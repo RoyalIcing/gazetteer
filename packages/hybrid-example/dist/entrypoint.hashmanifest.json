@@ -1,5 +1,5 @@
 {
-  "./src/templates/Feed/Feed.tsx": "entry-Feed-5b341b8c.js",
-  "./src/templates/EditAccount/EditAccount.tsx": "entry-EditAccount-61fc2835.js",
-  "./src/templates/UserProfile/UserProfile.tsx": "entry-UserProfile-748def21.js"
+  "./src/templates/Feed/Feed.tsx": "entry-Feed-e9f072bb.js",
+  "./src/templates/EditAccount/EditAccount.tsx": "entry-EditAccount-4afd9fe7.js",
+  "./src/templates/UserProfile/UserProfile.tsx": "entry-UserProfile-070f5dac.js"
 }

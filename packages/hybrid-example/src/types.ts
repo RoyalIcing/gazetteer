@@ -30,17 +30,19 @@ export function dataSourceIdentifierToString(
 
 // Templates
 
-export type TemplateIdentifier =
-  | { type: "template"; framework: "react"; componentName: symbol }
-  | { type: "template"; framework: "vue"; componentName: symbol };
+export type TemplateIdentifier = {
+  type: "template";
+  name: string;
+  framework: "react" | "vue";
+};
 
 export function reactTemplate(
   componentName: string
-): { type: "template"; framework: "react"; componentName: symbol } {
+): { type: "template"; name: string; framework: "react" } {
   return {
     type: "template",
-    framework: "react",
-    componentName: Symbol.for(`DataSource.${componentName}`)
+    name: componentName,
+    framework: "react"
   };
 }
 

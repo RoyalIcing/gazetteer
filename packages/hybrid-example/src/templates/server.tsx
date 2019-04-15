@@ -2,11 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 
 import { DataSourceResult, DataSourceIdentifier, TemplateIdentifier } from "../types";
-import { Templates } from "../main";
-import { Feed } from "./Feed/Feed";
-import { EditAccount } from "./EditAccount/EditAccount";
 import { DataSourceContext } from "../root/DataSourceContext";
-import { UserProfile } from "./UserProfile/UserProfile";
+import { findTemplate } from "./registry";
 
 export function renderTemplateHTML({
   id,
@@ -17,15 +14,14 @@ export function renderTemplateHTML({
     identifier: DataSourceIdentifier
   ): DataSourceResult<Data>;
 }): string | undefined {
-  if (id.framework === "react") {
-    let el: React.ReactElement | undefined;
-    if (id === Templates.Feed) {
-      el = <Feed />;
-    } else if (id === Templates.EditAccount) {
-      el = <EditAccount />;
-    } else if (id === Templates.UserProfile) {
-      el = <UserProfile />;
-    }
+  const options = findTemplate(id.name);
+  if (!options) {
+    throw new Error(`Unknown template: ${id.name}`);
+  }
+
+  if (options.framework === "react") {
+    const Component = options.component;
+    const el = <Component />;
 
     return ReactDOM.renderToString(
       <DataSourceContext.Provider value={resultForDataSource}>
