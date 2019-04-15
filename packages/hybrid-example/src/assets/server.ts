@@ -12,6 +12,18 @@ async function readEntrypointJSON(): Promise<Record<string, string>> {
   return JSON.parse(data);
 }
 
+export async function assetPublicPathForActivateTemplate(): Promise<string | undefined> {
+  const entrypointJSON = await readEntrypointJSON();
+
+  const templateSourcePath = `./src/templates/browser.tsx`;
+  const assetFileName = entrypointJSON[templateSourcePath];
+  if (!assetFileName) {
+    return;
+  }
+
+  return assetFileName;
+}
+
 export async function assetPublicPathForTemplate(templateName: string): Promise<string | undefined> {
   const entrypointJSON = await readEntrypointJSON();
 

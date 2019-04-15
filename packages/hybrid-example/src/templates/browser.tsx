@@ -13,3 +13,7 @@ export function activateTemplate(name: string) {
     ReactDOM.render(<Component />, document.getElementById("root"));
   }
 }
+
+if (typeof window !== "undefined") {
+  (window as any).activateTemplate = activateTemplate;
+}

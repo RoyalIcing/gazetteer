@@ -21,6 +21,8 @@ function rollupOptions(): {
     input[templateName] = `./src/templates/${templateName}/${templateName}.tsx`;
   });
 
+  input["activateTemplate"] = `./src/templates/browser.tsx`;
+
   const inputOptions: rollup.InputOptions = {
     input: input,
     plugins: [
@@ -34,7 +36,7 @@ function rollupOptions(): {
       rollupPluginEntrypoint({
         manifestName: "dist/entrypoint.hashmanifest.json"
       })
-    ],
+    ]
     // external: ["react"]
   };
 

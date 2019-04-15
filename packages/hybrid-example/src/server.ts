@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { loadDataSource } from "./dataSources/server";
 import { htmlPage, renderTemplateHTML } from "./templates/server";
-import { loadAssetForPublicPath, loadChunkForPublicPath, assetPublicPathForTemplate } from "./assets/server";
+import { loadAssetForPublicPath, loadChunkForPublicPath, assetPublicPathForTemplate, assetPublicPathForActivateTemplate } from "./assets/server";
 import "./templates/Feed/Feed";
 import "./templates/EditAccount/EditAccount";
 import "./templates/UserProfile/UserProfile";
@@ -36,16 +36,6 @@ export async function startServer(routes: Array<GazetteerRoute>) {
         const assetPath = request.params.assetPath;
         return h
           .response(await loadChunkForPublicPath(assetPath))
-          .type("text/javascript");
-      }
-    },
-    {
-      method: "GET",
-      path: "/public/{assetPath*}",
-      async handler(request, h) {
-        const assetPath = request.params.assetPath;
-        return h
-          .response(await loadAssetForPublicPath(assetPath))
           .type("text/javascript");
       }
     }
@@ -83,13 +73,18 @@ export async function startServer(routes: Array<GazetteerRoute>) {
 
           const templateName = route.template.name;
           const templatePublicPath = await assetPublicPathForTemplate(templateName);
+          const activateTemplatePublicPath = await assetPublicPathForActivateTemplate();
           const bodyHTML = `
-            ${contentHTML}
+            <div id="root">${contentHTML}</div>
 
-            <script src="/public/chunks/chunk-3217c0dc.js"></script>
+            <script src="/public/chunks/chunk-bfa94d84.js"></script>
+            <script src="/public/chunks/chunk-b73c8f46.js"></script>
             <script src="/public/chunks/${templatePublicPath}"></script>
+            <script src="/public/chunks/${activateTemplatePublicPath}"></script>
 
-            <!--<script src="/public/templates/${templateName}/${templateName}.js"></script>-->
+            <script>
+            window.activateTemplate(${JSON.stringify(templateName)});
+            </script>
           `;
 
           return h

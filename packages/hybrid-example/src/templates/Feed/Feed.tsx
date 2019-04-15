@@ -18,7 +18,7 @@ export function Feed({}) {
   const [counter, updateCounter] = React.useState(0);
   React.useEffect(() => {
     updateCounter(n => n + 1);
-  });
+  }, []);
 
   return (
     <div>
