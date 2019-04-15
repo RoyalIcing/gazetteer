@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+<title>Example</title>
+
+</head>
+<body>
+
+<royal-router>
+  <royal-route path="/" sources="Viewer.profile">
+    Landing
+  </royal-route>
+  <royal-route path="/feed" sources="Feed.items Viewer.profile">
+    Feed
+  </royal-route>
+</royal-router>
+
+<royal-markdown>
+# Hello
+
+- This is an example
+
+We can use HTML
+
+<figure>
+  <img src="/image.png">
+  <figcaption>An interesting description</figcaption>
+</figure>
+
+</royal-markdown>
+
+</body>
+</html>
