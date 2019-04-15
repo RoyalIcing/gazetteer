@@ -4,21 +4,33 @@
   "description": "Declarative index for React apps",
   "main": "index.js",
   "dependencies": {
+    "boom": "^7.3.0",
     "hapi": "^18.1.0",
     "htmlescape": "^1.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "@types/boom": "^7.2.1",
     "@types/hapi": "^18.0.1",
     "@types/htmlescape": "^1.1.1",
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.3",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.10.0",
+    "rollup-plugin-entrypoint-hashmanifest": "^0.1.2",
+    "rollup-plugin-iife": "^0.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-node": "^8.0.3",
     "ts-node-dev": "^1.0.0-pre.32",
+    "tslib": "^1.9.3",
     "typescript": "^3.4.2"
   },
   "scripts": {
-    "dev": "PORT=9911 ts-node-dev server.ts",
+    "build:clean": "rimraf dist && mkdir dist",
+    "build": "npm run build:clean && ts-node --project tsconfig.json script-build.ts",
+    "watch": "npm run build:clean && ts-node --project tsconfig.json script-watch.ts",
+    "dev": "PORT=9911 ts-node-dev script-dev.ts",
     "test": "jest"
   },
   "author": "Patrick Smith",
