@@ -18,8 +18,11 @@
     "@types/react-dom": "^16.8.3",
     "rimraf": "^2.6.3",
     "rollup": "^1.10.0",
+    "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-entrypoint-hashmanifest": "^0.1.2",
     "rollup-plugin-iife": "^0.2.0",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-typescript": "^1.0.1",
     "ts-node": "^8.0.3",
     "ts-node-dev": "^1.0.0-pre.32",
@@ -28,7 +31,7 @@
   },
   "scripts": {
     "build:clean": "rimraf dist && mkdir dist",
-    "build": "npm run build:clean && ts-node --project tsconfig.json script-build.ts",
+    "build": "NODE_ENV=production npm run build:clean && ts-node --project tsconfig.json script-build.ts",
     "watch": "npm run build:clean && ts-node --project tsconfig.json script-watch.ts",
     "dev": "PORT=9911 ts-node-dev script-dev.ts",
     "test": "jest"

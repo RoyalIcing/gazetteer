@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import { DataSourceResult, DataSourceIdentifier, dataSourceIdentifierToString } from "../types";
 
@@ -9,7 +9,7 @@ export const DataSourceContext = React.createContext(
 );
 
 export function useDataSource<Data>(identifier: DataSourceIdentifier): DataSourceResult<Data> {
-  const resultForDataSource = useContext(DataSourceContext);
+  const resultForDataSource = React.useContext(DataSourceContext);
   return resultForDataSource(identifier);
 }
 

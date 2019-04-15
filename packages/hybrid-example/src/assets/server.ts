@@ -12,6 +12,18 @@ async function readEntrypointJSON(): Promise<Record<string, string>> {
   return JSON.parse(data);
 }
 
+export async function assetPublicPathForTemplate(templateName: string): Promise<string | undefined> {
+  const entrypointJSON = await readEntrypointJSON();
+
+  const templateSourcePath = `./src/templates/${templateName}/${templateName}.tsx`;
+  const assetFileName = entrypointJSON[templateSourcePath];
+  if (!assetFileName) {
+    return;
+  }
+
+  return assetFileName;
+}
+
 export async function loadAssetForPublicPath(
   publicPath: string
 ): Promise<Buffer | undefined> {
@@ -26,10 +38,19 @@ export async function loadAssetForPublicPath(
     throw Boom.notFound(`Asset not found: ${publicPath}`);
   }
 
-  // const assetSourcePath = "./src/templates/UserProfile/UserProfile.tsx";
-  // const assetFileName = "entry-UserProfile-748def21.js";
-
   const filePath = Path.join(__dirname, "../..", "dist", assetFileName);
+  try {
+    const data = await readFile(filePath);
+    return data;
+  } catch {
+    return;
+  }
+}
+
+export async function loadChunkForPublicPath(
+  publicPath: string
+): Promise<Buffer | undefined> {
+  const filePath = Path.join(__dirname, "../..", "dist", publicPath);
   try {
     const data = await readFile(filePath);
     return data;

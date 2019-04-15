@@ -15,6 +15,11 @@ export function Feed({}) {
     DataSources.Feed.list
   ) as DataSourceResult<FeedListData>;
 
+  const [counter, updateCounter] = React.useState(0);
+  React.useEffect(() => {
+    updateCounter(n => n + 1);
+  });
+
   return (
     <div>
       <h1>Feed</h1>
@@ -27,6 +32,7 @@ export function Feed({}) {
           </ul>
         </>
       )}
+      {counter}
     </div>
   );
 }
