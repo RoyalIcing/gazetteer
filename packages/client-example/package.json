@@ -10,7 +10,9 @@
   "devDependencies": {
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.3",
+    "rimraf": "^2.6.3",
     "rollup": "^1.10.0",
+    "rollup-plugin-entrypoint-hashmanifest": "^0.1.2",
     "rollup-plugin-iife": "^0.2.0",
     "rollup-plugin-typescript": "^1.0.1",
     "ts-node": "^8.0.3",
@@ -18,7 +20,9 @@
     "typescript": "^3.4.2"
   },
   "scripts": {
-    "build": "ts-node --project tsconfig.json rollup-build.ts",
+    "build:clean": "rimraf dist && mkdir dist",
+    "build": "npm run build:clean && ts-node --project tsconfig.json rollup-build.ts",
+    "watch": "WATCH=1 npm run build",
     "test": "jest"
   },
   "author": "Patrick Smith",

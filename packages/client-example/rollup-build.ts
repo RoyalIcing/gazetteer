@@ -1,13 +1,14 @@
 ///<reference path="./deps.d.ts"/>
 import * as rollup from "rollup";
-import rollupTypescript from "rollup-plugin-typescript";
-import rollupIIFE from "rollup-plugin-iife";
+import rollupPluginTypescript from "rollup-plugin-typescript";
+import rollupPluginIIFE from "rollup-plugin-iife";
+import rollupPluginEntrypoint from "rollup-plugin-entrypoint-hashmanifest";
 import { Templates } from "./src/main";
 
-async function build() {
+async function go() {
   // const mainBundle = await rollup.rollup({
   //   input: "./src/main.ts",
-  //   plugins: [rollupTypescript()]
+  //   plugins: [rollupPluginTypescript()]
   // });
 
   // await mainBundle.write({
@@ -21,7 +22,7 @@ async function build() {
   // const promises = templateNames.map(async (templateName) => {
   //   const templateBundle = await rollup.rollup({
   //     input: `./src/templates/${templateName}/${templateName}.tsx`,
-  //     plugins: [rollupTypescript()],
+  //     plugins: [rollupPluginTypescript()],
   //     external: ["react"]
   //   });
   //   await templateBundle.write({
@@ -42,21 +43,34 @@ async function build() {
     input[templateName] = `./src/templates/${templateName}/${templateName}.tsx`;
   });
 
-  const templateBundle = await rollup.rollup({
+  const shouldWatch = !!process.env.WATCH;
+
+  const inputOptions: rollup.InputOptions = {
     input: input,
-    plugins: [rollupTypescript(), rollupIIFE()],
+    plugins: [rollupPluginTypescript(), rollupPluginIIFE(), rollupPluginEntrypoint({
+      manifestName: "dist/entrypoint.hashmanifest.json"
+    })],
     external: ["react"]
-  });
-  await templateBundle.write({
-    dir: "dist/templates",
-    entryFileNames: "entry-[name].js",
+  };
+
+  const outputOptions: rollup.OutputOptions = {
+    dir: "dist",
+    entryFileNames: "entry-[name]-[hash].js",
+    chunkFileNames: "chunk-[hash].js",
     globals: {
       react: "React"
     },
     format: "es",
     name: "main",
     sourcemap: true
-  });
+  };
+
+  if (shouldWatch) {
+    rollup.watch([{ ...inputOptions, output: outputOptions }]);
+  } else {
+    const templateBundle = await rollup.rollup(inputOptions);
+    await templateBundle.write(outputOptions);
+  }
 }
 
-build();
+go();
