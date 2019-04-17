@@ -1,14 +1,14 @@
 ///<reference path="./deps.d.ts"/>
 import * as rollup from "rollup";
-import rollupPluginResolve from 'rollup-plugin-node-resolve';
-import rollupPluginCommonjs from 'rollup-plugin-commonjs';
+import rollupPluginResolve from "rollup-plugin-node-resolve";
+import rollupPluginCommonjs from "rollup-plugin-commonjs";
 import rollupPluginTypescript from "rollup-plugin-typescript";
 import rollupPluginIIFE from "rollup-plugin-iife";
 import rollupPluginEntrypoint from "rollup-plugin-entrypoint-hashmanifest";
-import rollupPluginReplace from 'rollup-plugin-replace';
+import rollupPluginReplace from "rollup-plugin-replace";
 import { Templates } from "./src/main";
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || "development";
 
 function rollupOptions(): {
   inputOptions: rollup.InputOptions;
@@ -30,7 +30,7 @@ function rollupOptions(): {
       rollupPluginResolve(),
       rollupPluginCommonjs(),
       rollupPluginReplace({
-        'process.env.NODE_ENV': JSON.stringify(env)
+        "process.env.NODE_ENV": JSON.stringify(env)
       }),
       rollupPluginIIFE(),
       rollupPluginEntrypoint({
@@ -55,7 +55,9 @@ function rollupOptions(): {
   return { inputOptions, outputOptions };
 }
 
-function isOutputAsset(outputItem: rollup.OutputAsset | rollup.OutputChunk): outputItem is rollup.OutputAsset {
+export function isOutputAsset(
+  outputItem: rollup.OutputAsset | rollup.OutputChunk
+): outputItem is rollup.OutputAsset {
   return (outputItem as rollup.OutputAsset).isAsset === true;
 }
 
@@ -75,7 +77,38 @@ export async function build() {
   });
 }
 
-export function watch(): rollup.RollupWatcher {
+export function watch({
+  initialBuild,
+  onBuild
+}: {
+  initialBuild: boolean;
+  onBuild: (build: rollup.RollupBuild, outputPromise: Promise<rollup.RollupOutput>) => void;
+}): rollup.RollupWatcher {
   const { inputOptions, outputOptions } = rollupOptions();
-  return rollup.watch([{ ...inputOptions, output: outputOptions }]);
+  const watcher = rollup.watch([{ ...inputOptions, output: outputOptions }]);
+
+  if (initialBuild) {
+    rollup.rollup(inputOptions)
+      .then(build => {
+        const outputPromise = build.generate(outputOptions);
+        onBuild(build, outputPromise);
+      });
+  }
+
+  watcher.on(
+    "event",
+    (
+      event:
+        | { code: "START" | "END" | "ERROR" | "FATAL" | "BUNDLE_START" }
+        | { code: "BUNDLE_END"; result: rollup.RollupBuild }
+    ) => {
+      if (event.code === "BUNDLE_END") {
+        const build = event.result;
+        const outputPromise = build.generate(outputOptions);
+        onBuild(build, outputPromise);
+      }
+    }
+  );
+
+  return watcher;
 }

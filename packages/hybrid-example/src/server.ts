@@ -6,14 +6,25 @@ import {
   DataSourceResult,
   DataSourceIdentifier
 } from "./types";
+import { State } from "./state";
 import { loadDataSource } from "./dataSources/server";
 import { htmlPage, renderTemplateHTML } from "./templates/server";
-import { loadAssetForPublicPath, loadChunkForPublicPath, assetPublicPathForTemplate, assetPublicPathForActivateTemplate } from "./assets/server";
+import {
+  loadChunkForPublicPath,
+  assetPublicPathForTemplate,
+  assetPublicPathForActivateTemplate
+} from "./assets/server";
 import "./templates/Feed/Feed";
 import "./templates/EditAccount/EditAccount";
 import "./templates/UserProfile/UserProfile";
 
-export async function startServer(routes: Array<GazetteerRoute>) {
+export async function startServer({
+  routes,
+  state
+}: {
+  routes: Array<GazetteerRoute>;
+  state: State;
+}) {
   const server = new Server({
     port: process.env.PORT
   });
@@ -72,13 +83,20 @@ export async function startServer(routes: Array<GazetteerRoute>) {
             }) || "";
 
           const templateName = route.template.name;
-          const templatePublicPath = await assetPublicPathForTemplate(templateName);
+          const templatePublicPath = await assetPublicPathForTemplate(
+            templateName
+          );
+
+          const chunkNames = await state.getChunkNamesFor(templateName);
+          console.log(templateName, "chunkNames", chunkNames)
+
           const activateTemplatePublicPath = await assetPublicPathForActivateTemplate();
           const bodyHTML = `
             <div id="root">${contentHTML}</div>
 
-            <script src="/public/chunks/chunk-bfa94d84.js"></script>
-            <script src="/public/chunks/chunk-b73c8f46.js"></script>
+            ${
+              chunkNames ? chunkNames.map(chunkName => `<script src="/public/chunks/${chunkName}"></script>`).join("\n") : ""
+            }
             <script src="/public/chunks/${templatePublicPath}"></script>
             <script src="/public/chunks/${activateTemplatePublicPath}"></script>
 
