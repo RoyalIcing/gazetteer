@@ -1,3 +1,6 @@
 import { watch } from "./rollup-build";
 
-watch();
+watch({
+  initialBuild: false,
+  onBuild() {}
+});

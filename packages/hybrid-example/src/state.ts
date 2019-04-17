@@ -12,7 +12,7 @@ export function makeState(): State {
 
   function updateRollupBuild(newBuild: RollupBuild, outputPromise: Promise<RollupOutput>) {
     console.log("updateRollupBuild")
-    outputPromises.push(outputPromise);
+    outputPromises = [outputPromise];
   }
 
   async function getChunkNamesFor(name: string): Promise<Array<string> | undefined> {
