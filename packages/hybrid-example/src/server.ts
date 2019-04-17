@@ -62,7 +62,12 @@ export async function startServer({
           const results = (await Promise.all(
             route.dataSources.map(identifier =>
               loadDataSource(identifier, { params: request.params })
-                .then(data => ({ identifier, identifierEncoded: dataSourceIdentifierToString(identifier), data, loaded: true }))
+                .then(data => ({
+                  identifier,
+                  identifierEncoded: dataSourceIdentifierToString(identifier),
+                  data,
+                  loaded: true
+                }))
                 .catch(error => ({
                   identifier,
                   identifierEncoded: dataSourceIdentifierToString(identifier),
@@ -90,21 +95,25 @@ export async function startServer({
           );
 
           const chunkNames = await state.getChunkNamesFor(templateName);
-          console.log(templateName, "chunkNames", chunkNames)
+          console.log(templateName, "chunkNames", chunkNames);
 
           const activateTemplatePublicPath = await assetPublicPathForActivateTemplate();
           const bodyHTML = `
-            <div id="root">${contentHTML}</div>
+<div id="root">${contentHTML}</div>
 
-            ${
-              chunkNames ? chunkNames.map(chunkName => `<script src="/public/chunks/${chunkName}"></script>`).join("\n") : ""
-            }
-            <script src="/public/chunks/${templatePublicPath}"></script>
-            <script src="/public/chunks/${activateTemplatePublicPath}"></script>
+${
+  chunkNames
+    ? chunkNames
+        .map(chunkName => `<script src="/public/chunks/${chunkName}"></script>`)
+        .join("\n")
+    : ""
+}
+<script src="/public/chunks/${templatePublicPath}"></script>
+<script src="/public/chunks/${activateTemplatePublicPath}"></script>
 
-            <script>
-            window.activateTemplate(${JSON.stringify(templateName)});
-            </script>
+<script>
+window.activateTemplate(${jsonStringifyForHTML(templateName)});
+</script>
           `;
 
           return h
