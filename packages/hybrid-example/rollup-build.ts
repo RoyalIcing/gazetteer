@@ -6,6 +6,7 @@ import rollupPluginTypescript from "rollup-plugin-typescript";
 import rollupPluginIIFE from "rollup-plugin-iife";
 import rollupPluginEntrypoint from "rollup-plugin-entrypoint-hashmanifest";
 import rollupPluginReplace from "rollup-plugin-replace";
+import rollupPluginAlias from "rollup-plugin-alias";
 import { Templates } from "./src/main";
 
 const env = process.env.NODE_ENV || "development";
@@ -26,6 +27,9 @@ function rollupOptions(): {
   const inputOptions: rollup.InputOptions = {
     input: input,
     plugins: [
+      rollupPluginAlias({
+        'vue': require.resolve('vue/dist/vue.esm.js')
+      }),
       rollupPluginTypescript(),
       rollupPluginResolve(),
       rollupPluginCommonjs(),

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DataSourceResult, DataSourceIdentifier, dataSourceIdentifierToString } from "../types";
+import { DataSourceResult, DataSourceIdentifier, dataSourceIdentifierToString } from "../../types";
 
 export const DataSourceContext = React.createContext(
   function<Data>(identifier: DataSourceIdentifier) {

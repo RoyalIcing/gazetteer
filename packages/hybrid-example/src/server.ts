@@ -15,7 +15,9 @@ import {
   assetPublicPathForTemplate,
   assetPublicPathForActivateTemplate
 } from "./assets/server";
+
 import "./templates/Feed/Feed";
+import "./templates/FeedVue/FeedVue";
 import "./templates/EditAccount/EditAccount";
 import "./templates/UserProfile/UserProfile";
 
@@ -59,76 +61,96 @@ export async function startServer({
         method: "GET",
         path,
         async handler(request, h) {
-          const results = (await Promise.all(
-            route.dataSources.map(identifier =>
-              loadDataSource(identifier, { params: request.params })
-                .then(data => ({
-                  identifier,
-                  identifierEncoded: dataSourceIdentifierToString(identifier),
-                  data,
-                  loaded: true
-                }))
-                .catch(error => ({
-                  identifier,
-                  identifierEncoded: dataSourceIdentifierToString(identifier),
-                  error: error as Error,
-                  loaded: true
-                }))
-            )
-          )) as Array<DataSourceResult & { identifier: DataSourceIdentifier }>;
-
-          const contentHTML =
-            renderTemplateHTML({
-              id: route.template,
-              resultForDataSource<Data>(identifier: DataSourceIdentifier) {
-                return (results.find(
-                  result => result.identifier === identifier
-                ) || {
-                  loaded: false
-                }) as DataSourceResult<Data>;
-              }
-            }) || "";
-
-          const templateName = route.template.name;
-          const templatePublicPath = await assetPublicPathForTemplate(
-            templateName
-          );
-
-          const chunkNames = await state.getChunkNamesFor(templateName);
-          console.log(templateName, "chunkNames", chunkNames);
-
-          const activateTemplatePublicPath = await assetPublicPathForActivateTemplate();
-          const bodyHTML = `
-<div id="root">${contentHTML}</div>
-
-${
-  chunkNames
-    ? chunkNames
-        .map(chunkName => `<script src="/public/chunks/${chunkName}"></script>`)
-        .join("\n")
-    : ""
-}
-<script src="/public/chunks/${templatePublicPath}"></script>
-<script src="/public/chunks/${activateTemplatePublicPath}"></script>
-
-<script>
-window.activateTemplate(${jsonStringifyForHTML(templateName)});
-</script>
-          `;
-
-          return h
-            .response(
-              htmlPage(
-                `<script type="json" id="dataSourcesInitial">${jsonStringifyForHTML(
-                  results
-                )}</script>`,
-                bodyHTML
+          try {
+            const results = (await Promise.all(
+              route.dataSources.map(identifier =>
+                loadDataSource(identifier, { params: request.params })
+                  .then(data => ({
+                    identifier,
+                    identifierEncoded: dataSourceIdentifierToString(identifier),
+                    data,
+                    loaded: true
+                  }))
+                  .catch(error => ({
+                    identifier,
+                    identifierEncoded: dataSourceIdentifierToString(identifier),
+                    error: error as Error,
+                    loaded: true
+                  }))
               )
-            )
-            .type("text/html");
+            )) as Array<DataSourceResult & { identifier: DataSourceIdentifier }>;
+
+            const contentHTML =
+              (await renderTemplateHTML({
+                id: route.template,
+                resultForDataSource<Data>(identifier: DataSourceIdentifier) {
+                  return (results.find(
+                    result => result.identifier === identifier
+                  ) || {
+                    loaded: false
+                  }) as DataSourceResult<Data>;
+                }
+              })) || "";
+
+            const templateName = route.template.name;
+            const templatePublicPath = await assetPublicPathForTemplate(
+              templateName
+            );
+
+            const activateChunkNames = await state.getChunkNamesFor("activateTemplate");
+            const templateChunkNames = await state.getChunkNamesFor(templateName);
+            const chunkNames = [...(activateChunkNames || []), ...(templateChunkNames || [])]
+            console.log(templateName, "chunkNames", chunkNames);
+
+            const activateTemplatePublicPath = await assetPublicPathForActivateTemplate();
+            const bodyHTML = `
+  <div id="root">${contentHTML}</div>
+
+  ${
+    chunkNames
+      ? chunkNames
+          .map(chunkName => `<script src="/public/chunks/${chunkName}"></script>`)
+          .join("\n")
+      : ""
+  }
+  <script src="/public/chunks/${templatePublicPath}"></script>
+  <script src="/public/chunks/${activateTemplatePublicPath}"></script>
+
+  <script>
+  window.activateTemplate(${jsonStringifyForHTML(templateName)});
+  </script>
+            `;
+
+            return h
+              .response(
+                htmlPage(
+                  `<script type="json" id="dataSourcesInitial">${jsonStringifyForHTML(
+                    results
+                  )}</script>`,
+                  bodyHTML
+                )
+              )
+              .type("text/html");
+          }
+          catch (error) {
+            console.error(error);
+            throw error;
+          }
         }
       });
     });
+  });
+
+  server.events.on("log", (event, tags) => {
+    if (tags.error) {
+      console.log(
+        `Server error: ${
+          event.error ? (event.error as any).message : "unknown"
+        }`
+      );
+    } else {
+      console.log(event)
+    }
   });
 
   await server.start();

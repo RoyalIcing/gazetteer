@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Templates, DataSources } from "../../main";
-import { useRequiredDataSource } from "../../root/DataSourceContext";
+import { useRequiredDataSource } from "../../root/react/DataSourceContext";
 import { registerTemplate } from "../registry";
 
 export function UserProfile({}) {

@@ -23,11 +23,11 @@ export function makeState(): State {
 
     const { output: outputItems } = await latestOutputPromise;
 
-    console.log("outputItems", outputItems.length)
+    console.log("outputItems", outputItems.length, outputItems.map(a => ({ fileName: a.fileName, keys: Object.keys(a).join(" "), name: (a as any)["name"] })))
 
     for (let outputItem of outputItems) {
       if (isOutputAsset(outputItem)) {
-        // console.log("Asset", outputItem.fileName);
+        console.log("Asset", outputItem.fileName);
       } else {
         const { code, map, ...rest } = outputItem;
         console.log("Chunk", outputItem.name, outputItem.fileName, rest);

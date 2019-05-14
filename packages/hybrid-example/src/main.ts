@@ -2,7 +2,8 @@ import {
   GazetteerRoute,
   uniqueDataSource,
   urlParam,
-  reactTemplate
+  reactTemplate,
+  vueTemplate
 } from "./types";
 
 export const DataSources = {
@@ -19,6 +20,7 @@ export const DataSources = {
 
 export const Templates = {
   Feed: reactTemplate("Feed"),
+  FeedVue: vueTemplate("FeedVue"),
   EditAccount: reactTemplate("EditAccount"),
   UserProfile: reactTemplate("UserProfile")
 };
@@ -28,6 +30,11 @@ export const routes: Array<GazetteerRoute> = [
     paths: ["/feed"],
     dataSources: [DataSources.Feed.list, DataSources.Viewer.profile],
     template: Templates.Feed
+  },
+  {
+    paths: ["/feed-vue"],
+    dataSources: [DataSources.Feed.list, DataSources.Viewer.profile],
+    template: Templates.FeedVue
   },
   {
     paths: ["/account"],

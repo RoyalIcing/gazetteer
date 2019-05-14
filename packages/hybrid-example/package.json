@@ -8,7 +8,10 @@
     "hapi": "^18.1.0",
     "htmlescape": "^1.1.1",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "rollup-plugin-alias": "^1.5.1",
+    "vue": "^2.6.10",
+    "vue-server-renderer": "^2.6.10"
   },
   "devDependencies": {
     "@types/boom": "^7.2.1",

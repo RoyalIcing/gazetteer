@@ -46,6 +46,16 @@ export function reactTemplate(
   };
 }
 
+export function vueTemplate(
+  componentName: string
+): { type: "template"; name: string; framework: "vue" } {
+  return {
+    type: "template",
+    name: componentName,
+    framework: "vue"
+  };
+}
+
 export type DataSourceResult<Data = {}> =
   | { data?: Data; error?: Error; loaded: true }
   | { loaded: false };

@@ -2,7 +2,7 @@ import React from "react";
 
 import { DataSourceResult } from "../../types";
 import { Templates, DataSources } from "../../main";
-import { useDataSource } from "../../root/DataSourceContext";
+import { useDataSource } from "../../root/react/DataSourceContext";
 import { registerTemplate } from "../registry";
 
 type ViewerProfileData = {

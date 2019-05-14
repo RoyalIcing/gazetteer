@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
+import Vue from "vue";
+import { createRenderer as createVueRenderer } from "vue-server-renderer";
 
 import { DataSourceResult, DataSourceIdentifier, TemplateIdentifier } from "../types";
-import { DataSourceContext } from "../root/DataSourceContext";
+import { DataSourceContext } from "../root/react/DataSourceContext";
 import { findTemplate } from "./registry";
 
-export function renderTemplateHTML({
+export async function renderTemplateHTML({
   id,
   resultForDataSource
 }: {
@@ -13,7 +15,7 @@ export function renderTemplateHTML({
   resultForDataSource<Data>(
     identifier: DataSourceIdentifier
   ): DataSourceResult<Data>;
-}): string | undefined {
+}): Promise<string | undefined> {
   const options = findTemplate(id.name);
   if (!options) {
     throw new Error(`Unknown template: ${id.name}`);
@@ -28,6 +30,19 @@ export function renderTemplateHTML({
         {el || <div>Unknown template {id.toString()}</div>}
       </DataSourceContext.Provider>
     );
+  } else if (options.framework === "vue") {
+    const renderer = createVueRenderer();
+
+    const Component = options.component;
+    const app = new Vue({
+      render: h => h(Component, {
+        props: {
+          resultForDataSource
+        }
+      })
+    });
+
+    return renderer.renderToString(app);
   }
 }
 

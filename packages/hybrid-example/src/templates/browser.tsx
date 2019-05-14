@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Vue from "vue";
 import { findTemplate } from "./registry";
-import { DataSourceContext } from "../root/DataSourceContext";
+import { DataSourceContext } from "../root/react/DataSourceContext";
 import {
   DataSourceIdentifier,
   DataSourceResult,
@@ -43,6 +44,18 @@ export function activateTemplate(name: string) {
       </DataSourceContext.Provider>,
       document.getElementById("root")
     );
+  } else if (options.framework === "vue") {
+    const Component = options.component;
+
+    const app = new Vue({
+      render: h => h(Component, {
+        props: {
+          resultForDataSource
+        }
+      })
+    });
+
+    app.$mount("#root");
   }
 }
 
