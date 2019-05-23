@@ -8,6 +8,7 @@ import rollupPluginEntrypoint from "rollup-plugin-entrypoint-hashmanifest";
 import rollupPluginReplace from "rollup-plugin-replace";
 import rollupPluginAlias from "rollup-plugin-alias";
 import { Templates } from "./src/main";
+import { isOutputAsset } from "./rollup-utils";
 
 const env = process.env.NODE_ENV || "development";
 
@@ -57,12 +58,6 @@ function rollupOptions(): {
   };
 
   return { inputOptions, outputOptions };
-}
-
-export function isOutputAsset(
-  outputItem: rollup.OutputAsset | rollup.OutputChunk
-): outputItem is rollup.OutputAsset {
-  return (outputItem as rollup.OutputAsset).isAsset === true;
 }
 
 export async function build() {

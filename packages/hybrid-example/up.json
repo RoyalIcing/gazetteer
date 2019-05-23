@@ -1,0 +1,17 @@
+{
+  "name": "gazetteer-demo-1",
+  "profile": "up",
+  "regions": ["us-west-2"],
+  "hooks": {
+    "build": [
+      "make build_assets build_server",
+      "npm prune --production"
+    ],
+    "postbuild": [
+      "npm i --offline"
+    ]
+  },
+  "proxy": {
+    "command": "node lib/script-run-server.js"
+  }
+}

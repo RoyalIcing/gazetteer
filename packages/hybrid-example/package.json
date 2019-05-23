@@ -33,10 +33,12 @@
     "typescript": "^3.4.2"
   },
   "scripts": {
-    "build:clean": "rimraf dist && mkdir dist",
-    "build": "NODE_ENV=production npm run build:clean && ts-node --project tsconfig.json script-build.ts",
+    "clean:assets": "rimraf dist && mkdir dist",
+    "build:assets": "NODE_ENV=production npm run clean:assets && ts-node --project tsconfig.json script-build.ts",
+    "build:server": "NODE_ENV=production tsc --outDir lib",
     "watch": "npm run build:clean && ts-node --project tsconfig.json script-watch.ts",
     "dev": "PORT=9911 ts-node-dev script-dev.ts",
+    "start": "node lib/script-run-server.js",
     "test": "jest"
   },
   "author": "Patrick Smith",

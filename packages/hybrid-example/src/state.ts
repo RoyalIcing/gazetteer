@@ -1,5 +1,5 @@
 import { RollupBuild, RollupOutput } from "rollup";
-import { isOutputAsset } from "../rollup-build";
+import { isOutputAsset } from "../rollup-utils";
 
 export interface State {
   updateRollupBuild(newBuild: RollupBuild, outputPromise: Promise<RollupOutput>): void;
